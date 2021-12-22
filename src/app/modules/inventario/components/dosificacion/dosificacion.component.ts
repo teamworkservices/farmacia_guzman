@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { Dosificacion } from 'src/app/shared/models/dosificacion';
+import {MatDialog, MatDialogConfig} from "@angular/material/dialog";
+import { CrearDosificacionComponent } from './crear-dosificacion/crear-dosificacion.component';
 
 @Component({
   selector: 'app-dosificacion',
@@ -18,11 +20,22 @@ export class DosificacionComponent implements OnInit {
   ];
 
   dataSource!: MatTableDataSource<Dosificacion>
-  constructor() { }
+
+  constructor(public dialog: MatDialog) {
+    
+  }
 
   ngOnInit(): void {
     this.dataSource = new MatTableDataSource<Dosificacion>([]);
+    //this.dataSource.filter= 'hydro';
     this.dataSource.data = this.dosificacionData;
+  }
+
+  openCreateDialog(){
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.width = "50%";
+    //dialogConfig.panelClass = 'dialog-custom'
+    const dialogRef = this.dialog.open(CrearDosificacionComponent, dialogConfig);
   }
 
 }
