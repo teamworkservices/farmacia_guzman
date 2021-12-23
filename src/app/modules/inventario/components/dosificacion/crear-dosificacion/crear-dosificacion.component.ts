@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatDialogRef } from '@angular/material/dialog';
+import { Dosificacion } from 'src/app/shared/models/dosificacion';
+import Swal from 'sweetalert2';
+import { DosificacionService } from '../../../services/dosificacion.service';
 
 @Component({
   selector: 'app-crear-dosificacion',
@@ -10,17 +14,38 @@ export class CrearDosificacionComponent implements OnInit {
 
   form: FormGroup;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, 
+              private dosificacionService: DosificacionService,
+              public dialogRef: MatDialogRef<CrearDosificacionComponent>) {
+
     this.form = this.fb.group({
-      codDosificacion: ['', [Validators.required, Validators.maxLength(3)]],
+      codigoCtrl: ['', [Validators.required, Validators.maxLength(3)]],
+      nombreCtrl: ['', [Validators.required, Validators.maxLength(20)]],
     })
-   }
+  }
 
   ngOnInit(): void {
   }
 
   agregarDosificacion(){
+    if (this.form.valid) {
+      let dosificacion = new Dosificacion();
+      dosificacion.codigo = this.form.value['codigoCtrl'];
+      dosificacion.nombre = this.form.value['nombreCtrl'];
 
+      dosificacion = this.dosificacionService.agregarDosificacion(dosificacion);
+      this.dialogRef.close(dosificacion);
+    }
+  }
+
+  confirmModal(){
+    Swal.fire({
+      title: 'Correcto',
+      text: 'Dosificación agregado exitosamente!',
+      icon: 'success',
+      showConfirmButton: false,
+      timer: 2000
+    })
   }
 
 }
